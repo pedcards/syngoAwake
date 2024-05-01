@@ -13,12 +13,21 @@
 #Warn VarUnset, OutputDebug
 
 winStats := {}																			; map array of window
+winStats.hwnd := {epicHwnd:"",syngoHwnd:""}
 winStats.strings := {epicTitle:"Hyperspace – Production"
 					,syngoTitle:"syngo Dynamics"}
 
-SetTimer(epicWinStatus,1000)
+SetTimer(epicCheck,1000)
 
 ExitApp
+
+epicCheck()
+{
+	if !(epicWinStatus) {																; Not logged in, ignore
+		return
+	}
+
+}
 
 ; Check Epic window status. Returns TRUE if logged in.
 epicWinStatus()
