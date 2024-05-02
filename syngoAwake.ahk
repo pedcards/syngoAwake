@@ -12,29 +12,75 @@
 #Requires AutoHotkey v2
 #Warn VarUnset, OutputDebug
 
-winStats := {}																			; map array of window
-winStats.strings := {epicTitle:"Hyperspace – Production"
-					,syngoTitle:"syngo Dynamics"}
+win := {}																				; map array of window
+win.epic :=
+	{
+		title	: "Hyperspace – Production"
+	}
+win.syngo :=
+	{
+		title	: "syngo Dynamics",
+		lastActive	: A_Now,
+		inactive	: 0
+	}
+checkDelay := (10) *1000																; (secs) to check
 
-SetTimer(epicWinStatus,1000)
+SetTimer(winCheck,checkDelay)
 
+WinWaitClose("Hyperspace")
 ExitApp
 
-; Check Epic window status. Returns TRUE if logged in.
-epicWinStatus()
+; Check if Epic window exists, check if Syngo active
+winCheck()
 {
-	global winStats
+	if !(epicWinState()) {																; Not logged in, ignore
+		win.syngo.lastActive := A_Now		
+		win.syngo.inactive := 0
+		return
+	} else {
+		syngoWinState()	 																; Perform Syngo check
+	}
+}
 
-	if !WinExist(winStats.strings.epicTitle) {											; no Hyperspace Production window
+; Check Epic window state. Returns TRUE if logged in.
+epicWinState()
+{
+	global win
+
+	if !(winEpic := WinExist(win.epic.title)) {											; no Hyperspace Production window
 		return false
 	}
-	winEpicTitle := WinGetTitle(winStats.strings.epicTitle)
-	titleSplit := StrSplit(winEpicTitle," – ")
-	if (titleSplit[5]="Childrens") {													; 5th string means is logged in
+	fullTitle := WinGetTitle("ahk_id " winEpic)
+	titleSplit := StrSplit(fullTitle," – ")
+	if (ObjHasValue(titleSplit,"Childrens")=5) {										; 5th string means is logged in
 		return true
 	}
 
 	return false
+}
+
+; Check Syngo window. Send key if not active.
+syngoWinState()
+{
+	global win
+
+	if !(winSyngo := WinExist(win.syngo.title)) {										; No Syngo window
+		return
+	}
+	id := "ahk_id " winSyngo
+	if (WinActive(id)) {																; Syngo active, no problem!
+		win.syngo.lastActive := A_Now
+		win.syngo.inactive := 0
+		return
+	} else {																			; Syngo inactive, WAKEY WAKEY!
+		ControlSend("{Shift}",,id)
+		win.syngo.inactive := DateDiff(A_now, win.syngo.lastActive, "Minutes")
+	}
+	if (win.syngo.inactive > 30) {
+		MsgBox("syngoDynamics has been inactive for " win.syngo.inactive " minutes.`n`n"
+			. "Please logoff syngoDynamics.`n"
+			. "Be sure to save any unsaved work in Epic.")
+	}
 }
 
 ObjHasValue(aObj, aValue, rx:="") {
@@ -56,4 +102,3 @@ ObjHasValue(aObj, aValue, rx:="") {
 		}
 	return false																		; fails match, return err
 }
-
