@@ -74,7 +74,12 @@ syngoWinState()
 		return
 	} else {																			; Syngo inactive, WAKEY WAKEY!
 		ControlSend("{Shift}",,id)
-		win.syngo.inactive := DateDiff(A_now, win.syngo.lastActive, "Seconds")
+		win.syngo.inactive := DateDiff(A_now, win.syngo.lastActive, "Minutes")
+	}
+	if (win.syngo.inactive > 30) {
+		MsgBox("syngoDynamics has been inactive for " win.syngo.inactive " minutes.`n`n"
+			. "Please logoff syngoDynamics.`n"
+			. "Be sure to save any unsaved work in Epic.")
 	}
 }
 
