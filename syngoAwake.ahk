@@ -24,8 +24,9 @@ win.syngo :=
 	}
 checkDelay := (1) *1000																	; (secs) to check
 
-SetTimer(epicCheck,1000)
+SetTimer(winCheck,checkDelay)
 
+WinWaitClose("Hyperspace")
 ExitApp
 
 ; Check if Epic window exists, check if Syngo active
