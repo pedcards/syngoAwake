@@ -56,6 +56,25 @@ epicWinState()
 	return false
 }
 
+; Check Syngo window. Send key if not active.
+syngoWinState()
+{
+	global win
+
+	if !(winSyngo := WinExist(win.syngo.title)) {										; No Syngo window
+		return
+	}
+	id := "ahk_id " winSyngo
+	if (WinActive(id)) {																; Syngo active, no problem!
+		win.syngo.lastActive := A_Now
+		win.syngo.inactive := 0
+		return
+	} else {																			; Syngo inactive, WAKEY WAKEY!
+		ControlSend("{Shift}",,id)
+		win.syngo.inactive := DateDiff(A_now, win.syngo.lastActive, "Seconds")
+	}
+}
+
 ObjHasValue(aObj, aValue, rx:="") {
 	for key, val in aObj
 		if (rx="RX") {																	; argument 3 is "RX" 
@@ -75,4 +94,3 @@ ObjHasValue(aObj, aValue, rx:="") {
 		}
 	return false																		; fails match, return err
 }
-
