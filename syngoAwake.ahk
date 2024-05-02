@@ -28,12 +28,14 @@ SetTimer(epicCheck,1000)
 
 ExitApp
 
-epicCheck()
+; Check if Epic window exists, check if Syngo active
+winCheck()
 {
-	if !(epicWinStatus) {																; Not logged in, ignore
+	if !(epicWinState()) {																; Not logged in, ignore
 		return
+	} else {
+		syngoWinState()	 																; Perform Syngo check
 	}
-
 }
 
 ; Check Epic window status. Returns TRUE if logged in.
