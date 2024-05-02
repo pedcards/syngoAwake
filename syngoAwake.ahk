@@ -39,17 +39,17 @@ winCheck()
 	}
 }
 
-; Check Epic window status. Returns TRUE if logged in.
-epicWinStatus()
+; Check Epic window state. Returns TRUE if logged in.
+epicWinState()
 {
-	global winStats
+	global win
 
-	if !WinExist(winStats.strings.epicTitle) {											; no Hyperspace Production window
+	if !(winEpic := WinExist(win.epic.title)) {											; no Hyperspace Production window
 		return false
 	}
-	winEpicTitle := WinGetTitle(winStats.strings.epicTitle)
-	titleSplit := StrSplit(winEpicTitle," – ")
-	if (titleSplit[5]="Childrens") {													; 5th string means is logged in
+	fullTitle := WinGetTitle("ahk_id " winEpic)
+	titleSplit := StrSplit(fullTitle," – ")
+	if (ObjHasValue(titleSplit,"Childrens")=5) {										; 5th string means is logged in
 		return true
 	}
 
