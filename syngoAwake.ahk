@@ -12,10 +12,17 @@
 #Requires AutoHotkey v2
 #Warn VarUnset, OutputDebug
 
-winStats := {}																			; map array of window
-winStats.hwnd := {epicHwnd:"",syngoHwnd:""}
-winStats.strings := {epicTitle:"Hyperspace – Production"
-					,syngoTitle:"syngo Dynamics"}
+win := {}																				; map array of window
+win.epic :=
+	{
+		title	: "Hyperspace – Production"
+	}
+win.syngo :=
+	{
+		title	: "syngo Dynamics",
+		lastActive	: A_Now
+	}
+checkDelay := (1) *1000																	; (secs) to check
 
 SetTimer(epicCheck,1000)
 
