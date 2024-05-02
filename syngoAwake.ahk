@@ -20,9 +20,10 @@ win.epic :=
 win.syngo :=
 	{
 		title	: "syngo Dynamics",
-		lastActive	: A_Now
+		lastActive	: A_Now,
+		inactive	: 0
 	}
-checkDelay := (1) *1000																	; (secs) to check
+checkDelay := (10) *1000																; (secs) to check
 
 SetTimer(winCheck,checkDelay)
 
@@ -33,6 +34,8 @@ ExitApp
 winCheck()
 {
 	if !(epicWinState()) {																; Not logged in, ignore
+		win.syngo.lastActive := A_Now		
+		win.syngo.inactive := 0
 		return
 	} else {
 		syngoWinState()	 																; Perform Syngo check
