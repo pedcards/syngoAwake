@@ -13,15 +13,14 @@
 #Warn VarUnset, OutputDebug
 
 win := {}																				; map array of window
-win.epic :=
-	{
-		title	: "Hyperspace – Production"
+win.epic := {
+	title	: "Hyperspace – Production"
 	}
-win.syngo :=
-	{
-		title	: "syngo Dynamics",
-		lastActive	: A_Now,
-		inactive	: 0
+win.syngo := {
+	title	: "syngo Dynamics",
+	lastActive	: A_Now,
+	inactive	: 0,
+	limit		: 30
 	}
 checkDelay := (10) *1000																; (secs) to check
 
