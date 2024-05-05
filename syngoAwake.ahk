@@ -32,7 +32,7 @@ ExitApp
 ; Check if Epic window exists, check if Syngo active
 winCheck()
 {
-	if !(epicWinState()) {																; Not logged in, ignore
+	if !(epicWinState()) {																; Not logged in, ignore, reset timer
 		win.syngo.lastActive := A_Now		
 		win.syngo.inactive := 0
 		return
@@ -68,14 +68,14 @@ syngoWinState()
 	}
 	id := "ahk_id " winSyngo
 	if (WinActive(id)) {																; Syngo active, no problem!
-		win.syngo.lastActive := A_Now
+		win.syngo.lastActive := A_Now													; reset timer
 		win.syngo.inactive := 0
 		return
 	} else {																			; Syngo inactive, WAKEY WAKEY!
 		ControlSend("{Shift}",,id)
 		win.syngo.inactive := DateDiff(A_now, win.syngo.lastActive, "Minutes")
 	}
-	if (win.syngo.inactive > 30) {
+	if (win.syngo.inactive > win.syngo.limit) {
 		MsgBox("syngoDynamics has been inactive for " win.syngo.inactive " minutes.`n`n"
 			. "Please logoff syngoDynamics.`n"
 			. "Be sure to save any unsaved work in Epic.")
