@@ -91,6 +91,25 @@ syngoWinState()
 	}
 }
 
+/*
+Save any work in Epic, switch to Syngo to logoff
+*/
+closeSyngo() 
+{
+	global win
+
+	winEpic := "ahk_id " win.epic.hwnd
+	WinActivate(winEpic)
+	ControlSend("{F3}",,winEpic)
+	WinWait(winEpic,,5)
+	ControlSend("{Esc}",,winEpic)
+
+	winSyngo := "ahk_id " win.syngo.hwnd
+	WinActivate(winSyngo)
+
+	return
+}
+
 ObjHasValue(aObj, aValue, rx:="") {
 	for key, val in aObj
 		if (rx="RX") {																	; argument 3 is "RX" 
