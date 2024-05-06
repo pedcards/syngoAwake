@@ -20,7 +20,8 @@ win.syngo := {
 	title	: "syngo Dynamics",
 	lastActive	: A_Now,
 	inactive	: 0,
-	limit		: 30
+	limit		: 30,
+	units		: "Minutes"
 	}
 checkDelay := (10) *1000																; (secs) to check
 
@@ -49,6 +50,7 @@ epicWinState()
 	if !(winEpic := WinExist(win.epic.title)) {											; no Hyperspace Production window
 		return false
 	}
+	win.epic.hwnd := winEpic
 	fullTitle := WinGetTitle("ahk_id " winEpic)
 	titleSplit := StrSplit(fullTitle," – ")
 	if (ObjHasValue(titleSplit,"Childrens")=5) {										; 5th string means is logged in
@@ -66,6 +68,7 @@ syngoWinState()
 	if !(winSyngo := WinExist(win.syngo.title)) {										; No Syngo window
 		return
 	}
+	win.syngo.hwnd := winSyngo
 	id := "ahk_id " winSyngo
 	if (WinActive(id)) {																; Syngo active, no problem!
 		win.syngo.lastActive := A_Now													; reset timer
@@ -73,12 +76,18 @@ syngoWinState()
 		return
 	} else {																			; Syngo inactive, WAKEY WAKEY!
 		ControlSend("{Shift}",,id)
-		win.syngo.inactive := DateDiff(A_now, win.syngo.lastActive, "Minutes")
+		win.syngo.inactive := DateDiff(A_now, win.syngo.lastActive, win.syngo.units)
 	}
 	if (win.syngo.inactive > win.syngo.limit) {
-		MsgBox("syngoDynamics has been inactive for " win.syngo.inactive " minutes.`n`n"
-			. "Please logoff syngoDynamics.`n"
-			. "Be sure to save any unsaved work in Epic.")
+		res := MsgBox("syngoDynamics has been inactive for " win.syngo.inactive " " win.syngo.units ".`n`n"
+			. "Please logoff syngoDynamics.`n`n"
+			. "Click [OK] to save existing work in Epic and close syngoDynamics.",
+			"syngo Alert",
+			0x40031
+		)
+		if (res="OK") {
+			closeSyngo()
+		}
 	}
 }
 
