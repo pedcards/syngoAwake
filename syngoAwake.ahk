@@ -123,7 +123,8 @@ closeSyngo()
 		else if (tx := ObjHasValue(syngoHwnd,"Intermediate D3D","RX")) {				; main window or study list
 			ControlGetPos(&msX, &msY, &msW, &msH, syngoHwnd[tx],syngoId)				; get dimensions of Syngo viewport
 			ControlClick("x" msW-20 " y" msY+10,syngoId)								; logoff button
-			sleep 500
+			win.syngo.lastActive := A_Now												; reset timer
+			win.syngo.inactive := 0
 		}
 	}
 	
