@@ -63,7 +63,7 @@ epicWinState()
 ; Check Syngo window. Send key if not active.
 syngoWinState()
 {
-	global win
+	global win, checkDelay
 
 	if !(winSyngo := WinExist(win.syngo.title)) {										; No Syngo window
 		return
@@ -79,6 +79,7 @@ syngoWinState()
 		win.syngo.inactive := DateDiff(A_now, win.syngo.lastActive, win.syngo.units)
 	}
 	if (win.syngo.inactive > win.syngo.limit) {
+		SetTimer(winCheck,0)
 		res := MsgBox("syngoDynamics has been inactive for " win.syngo.inactive " " win.syngo.units ".`n`n"
 			. "Please logoff syngoDynamics.`n`n"
 			. "Click [OK] to save existing work in Epic and close syngoDynamics.",
@@ -88,6 +89,7 @@ syngoWinState()
 		if (res="OK") {
 			closeSyngo()
 		}
+		SetTimer(winCheck,checkDelay)
 	}
 }
 
