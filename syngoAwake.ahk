@@ -101,12 +101,32 @@ closeSyngo()
 	winEpic := "ahk_id " win.epic.hwnd
 	WinActivate(winEpic)
 	ControlSend("{F3}",,winEpic)
-	WinWait(winEpic,,5)
-	ControlSend("{Esc}",,winEpic)
+	ControlSend("{Esc}"
+		,,
+		(noteHwnd := WinWait("Note Editor ahk_exe Hyperdrive.exe",,1))					; look for Note Editor for 1 sec,
+		? noteHwnd : winEpic															; then Esc from either Note Editor or search bar
+	)
 
-	winSyngo := "ahk_id " win.syngo.hwnd
-	WinActivate(winSyngo)
+	loop 3
+	{
+		win.syngo.hwnd := WinExist(win.syngo.title)										; Syngo hwnd changes between activities
+		syngoId := "ahk_id " win.syngo.hwnd
+		WinActivate(syngoId)
 
+		syngoHwnd := WinGetControls(syngoId)
+		if ObjHasValue(syngoHwnd,"NativeImageControl","RX") {							; on a review screen
+			last := syngoHwnd.Length
+			ControlGetPos(&msX, &msY, &msW, &msH, syngoHwnd[last],syngoId)				; coords of first viewbox (rendered in reverse order)
+			Click(msX+20 " " msY-30)													; controlclick doesn't work on Study List button
+			sleep 500
+		} 
+		else if (tx := ObjHasValue(syngoHwnd,"Intermediate D3D","RX")) {				; main window or study list
+			ControlGetPos(&msX, &msY, &msW, &msH, syngoHwnd[tx],syngoId)				; get dimensions of Syngo viewport
+			ControlClick("x" msW-20 " y" msY+10,syngoId)								; logoff button
+			sleep 500
+		}
+	}
+	
 	return
 }
 
